@@ -1,5 +1,10 @@
 extends layout
+extends ../node_modules/jade-bootstrap/_bootstrap
 
-block content
-  h1= title
-  p Welcome to #{title}
+block body
+  +navbar("Colenso Project","dropdown_menu","inverse")
+    +nav_item("Colenso Project", "active") Home
+    +nav_item("index.html") About
+    +nav_item_dropdown("#")(label="Database")
+      +nav_item("#") Search
+      +nav_item("#") View
