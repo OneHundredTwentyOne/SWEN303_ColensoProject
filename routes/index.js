@@ -12,9 +12,23 @@ function (error, result) {
   if(error){ console.error(error);}
   else {
     res.render('index', { title: 'ColensoProject', place: result.result });
-}
-      }
-      );
+  }
+  }
+  );
+});
+
+/* View all items in database. */
+router.get("/fileList.jade",function(req,res){
+client.execute("LIST Colenso",
+function (error, result) {
+  if(error){ console.error(error);}
+  else {
+    list = result.result;
+    niceList = list.split("\r\n");
+    res.render('fileList', { title: 'ColensoProject', list: niceList });
+    }
+  }
+  );
 });
 
 
