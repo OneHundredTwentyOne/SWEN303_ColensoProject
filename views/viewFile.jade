@@ -3,15 +3,12 @@ extends ../node_modules/jade-bootstrap/_bootstrap
 
 block body
   +navbar("Colenso Project","dropdown_menu","inverse")
-    +nav_item("Colenso Project") Home
+    +nav_item("/") Home
     +nav_item("index.html") About
     +nav_item_dropdown("#")(label="Database")
       +nav_item("#") Search
-      +nav_item("#") View
-      +nav_item("/fileList", "active") View List of Files
+      +nav_item("viewFile", "active") View
+      +nav_item("fileList") View List of Files
   .container
-    h1 Colenso Database
-  .container
-        each val in list
-          li: a(href = "/viewFile?file=/" + val)
-            !{val}
+    br
+    p| !{file}

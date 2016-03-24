@@ -18,17 +18,33 @@ function (error, result) {
 });
 
 /* View all items in database. */
-router.get("/fileList.jade",function(req,res){
-client.execute("LIST Colenso",
+router.get("/fileList",function(req,res){
+client.execute("XQUERY db:list('Colenso')",
 function (error, result) {
   if(error){ console.error(error);}
   else {
     list = result.result;
     niceList = list.split("\r\n");
+    //console.log(niceList);
     res.render('fileList', { title: 'ColensoProject', list: niceList });
     }
   }
   );
+});
+
+router.get("/viewFile",function(req,res){
+client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0';" +
+  	"(doc('Colenso/"+req.query.file+"'))[1]",
+function (error, result) {
+  if(error){
+	   console.error(error);
+	  }
+	else {
+    //console.log(result.result);
+		res.render('viewFile', { title: 'Colenso Project', file: result.result });
+	 }
+	});
+
 });
 
 
