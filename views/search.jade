@@ -4,8 +4,10 @@ extends ../node_modules/jade-bootstrap/_bootstrap
 block body
   +navbar("Colenso Project","dropdown_menu","inverse")
     +nav_item("/") Home
+    +nav_item("index.html") About
     +nav_item_dropdown("#")(label="Database")
-      +nav_item("/fileList") View
-  .container
-    br
-    p| !{file}
+      +nav_item("fileList") View
+      +nav_item("search", "active") Search
+.container
+  h1 Search:
+.container

@@ -44,8 +44,21 @@ function (error, result) {
 		res.render('viewFile', { title: 'Colenso Project', file: result.result });
 	 }
 	});
-
 });
 
+router.get("/searchResult",function(req,res){
+client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0';" +
+req.query.searchString,
+function(error,result){
+    if(error){
+      console.error(error);
+      }
+    else{
+      console.log(req.query.searchString);
+      //console.log(result.result);
+      res.render('searchResult',{title: 'Colenso Project', searchItem: result.result});
+    }
+  });
+});
 
 module.exports = router;
