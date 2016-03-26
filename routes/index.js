@@ -41,24 +41,32 @@ function (error, result) {
 	  }
 	else {
     //console.log(result.result);
-		res.render('viewFile', { title: 'Colenso Project', file: result.result });
+    console.log(req.query.file);
+    res.render('viewFile', { title: 'Colenso Project', file: result.result });
 	 }
 	});
 });
 
-router.get("/searchResult",function(req,res){
-client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0';" +
-req.query.searchString,
-function(error,result){
+router.get("/search",function(req,res,next){
+  res.render('search',{title: 'Colenso Project'})
+});
+
+router.get("/searchResult",function(req,res,next){
+  var query = req.query.query;
+  console.log(query);
+  var searchQuery = ("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0';" +
+    "for $t in //text where matches($t, '" + query + "', 'i') = true() return db:path($t)");
+  console.log(searchQuery);
+  client.execute((searchQuery),
+  function (error, result) {
     if(error){
-      console.error(error);
-      }
-    else{
-      console.log(req.query.searchString);
-      //console.log(result.result);
-      res.render('searchResult',{title: 'Colenso Project', searchItem: result.result});
-    }
-  });
+	     console.error(error);
+	  }
+	  else {
+      var fileList = result.result.split('\n');
+      res.render('searchResult', { title: 'Colenso Project', files: fileList, searchString: query  });
+	 }
+	});
 });
 
 module.exports = router;

@@ -6,11 +6,8 @@ block body
     +nav_item("/", "active") Home
     +nav_item_dropdown("#")(label="Database")
       +nav_item("/fileList") View
+      +nav_item("/search") Search
   .container
     h1 Colenso Project
   .container
       p| Welcome to the Colenso Project
-  .container
-    form(action="/searchResult",method="get")
-      +input("text","searchString"," ","")
-      +submit("Search")
