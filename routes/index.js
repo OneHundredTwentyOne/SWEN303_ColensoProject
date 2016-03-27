@@ -41,7 +41,7 @@ function (error, result) {
 	  }
 	else {
     //console.log(result.result);
-    console.log(req.query.file);
+    //console.log(req.query.file);
     res.render('viewFile', { title: 'Colenso Project', file: result.result });
 	 }
 	});
@@ -83,7 +83,7 @@ router.get("/searchXQueryResult", function(req,res){
     }
     else{
       var fileList = result.result.split('\n');
-      console.log(fileList);
+      //console.log(fileList);
       res.render('searchXQueryResult',{title: 'Colenso Project', files: fileList, searchString: query});
     }
   });
