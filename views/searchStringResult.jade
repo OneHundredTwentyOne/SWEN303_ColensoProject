@@ -3,12 +3,15 @@ extends ../node_modules/jade-bootstrap/_bootstrap
 
 block body
   +navbar("Colenso Project","dropdown_menu","inverse")
-    +nav_item("/", "active") Home
+    +nav_item("/") Home
     +nav_item_dropdown("#")(label="Database")
-      +nav_item("/fileList") View
+      +nav_item("fileList") View
       +nav_item("/searchByString") Search By String
       +nav_item("/searchByXQuery") Search By XQuery
   .container
-    h1 Colenso Project
+    h2 String Search Results For '#{searchString}':
+
   .container
-      p| Welcome to the Colenso Project
+    each file in files
+      li
+        a(href = "/view?letter=" + file) #{file}
