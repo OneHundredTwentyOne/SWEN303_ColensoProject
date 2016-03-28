@@ -68,7 +68,8 @@ router.get("/searchStringResult",function(req,res){
 	  }
 	  else {
       var fileList = result.result.split('\n');
-      res.render('searchStringResult', { title: 'Colenso Project', files: fileList, searchString: query  });
+      var length = fileList.length;
+      res.render('searchStringResult', { title: 'Colenso Project', files: fileList, searchString: query, numResults: length  });
 	 }
 	});
 });
@@ -76,15 +77,16 @@ router.get("/searchStringResult",function(req,res){
 router.get("/searchXQueryResult", function(req,res){
   var query = req.query.query;
   console.log("XQUERY IS: " + query);
-  client.execute(("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0';" + query),
+  client.execute(("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0';" + "for $n in (collection('Colenso/')"+ query +")" + "return db:path($n)"),
   function(error,result){
     if(error){
       console.error(error);
     }
     else{
       var fileList = result.result.split('\n');
-      //console.log(fileList);
-      res.render('searchXQueryResult',{title: 'Colenso Project', files: fileList, searchString: query});
+      console.log(fileList);
+      var length = fileList.length;
+      res.render('searchXQueryResult',{title: 'Colenso Project', files: fileList, searchString: query, numResults: length});
     }
   });
 });

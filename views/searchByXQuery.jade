@@ -9,9 +9,9 @@ block body
       +nav_item("/searchByString") Search By String
       +nav_item("/searchByXQuery", "active") Search By XQuery
   .container
-    h1 Search:
+    h1 Search By XQuery:
     br
   .container
-  form(name = "simple", action = "/searchXQueryResult", method = "get")
-    +input("text", "query", "Search...", "", name = "query")
-    +submit("Search")
+    form(name = "simple", action = "/searchXQueryResult", method = "get")
+      input("text", "query", "Search...", "", name = "query")
+      +submit("Search")

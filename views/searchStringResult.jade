@@ -10,8 +10,9 @@ block body
       +nav_item("/searchByXQuery") Search By XQuery
   .container
     h2 String Search Results For '#{searchString}':
+    h3 Search Returned '#{numResults}' Results
 
   .container
     each file in files
       li
-        a(href = "/viewFile?file=" + file) #{file}
+        a(href = "/viewFile?file=" + file) !{file}
