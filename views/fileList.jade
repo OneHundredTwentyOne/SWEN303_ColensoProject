@@ -10,7 +10,7 @@ block body
       +nav_item("/searchByXQuery") Search By XQuery
   .container
     h1 Colenso Database
-  .container
-        each val in list
-          li: a(href = "/viewFile?file=/" + val)
-            #{val}
+    .container
+          each val in list
+            li: a(href = "/viewFile?file=/" + val)
+              !{val}

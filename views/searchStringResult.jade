@@ -12,7 +12,7 @@ block body
     h2 String Search Results For '#{searchString}':
     h3 Search Returned '#{numResults}' Results
 
-  .container
-    each file in files
-      li
-        a(href = "/viewFile?file=" + file) !{file}
+    .container
+      each file in files
+        li
+          a(href = "/viewFile?file=" + file) !{file}
