@@ -5,15 +5,14 @@ block body
   +navbar("Colenso Project","dropdown_menu","inverse")
     +nav_item("/") Home
     +nav_item_dropdown("#")(label="Database")
-      +nav_item("fileList") View
-      +nav_item("/uploadFile") Upload File
+      +nav_item("/fileList") View
+      +nav_item("/uploadFile", "active") Upload File
       +nav_item("/searchByString") Search By String
       +nav_item("/searchByXQuery") Search By XQuery
   .container
-    h2 String Search Results For '#{searchString}':
-    h3 Search Returned '#{numResults}' Results
-
-    .container
-      each file in files
-        li
-          a(href = "/viewFile?file=" + file) !{file}
+    h1 Upload XML File To Database
+    br
+  .container
+    form(name = "upload", action ="/upload", method = "post", enctype = "multipart/form-data")
+      input(type = "file", name = "file")
+      +submit("Upload")

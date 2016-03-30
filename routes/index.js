@@ -2,8 +2,17 @@ var basex = require('basex');
 var client = new basex.Session("127.0.0.1", 1984, "admin", "admin");
 client.execute("OPEN Colenso");
 var express = require('express');
+var cheerio = require('cheerio');
+var url = require('url');
 var router = express.Router();
 var fileName = "";
+var multer = require('multer');
+var multerStorage = multer.memoryStorage();
+var multerUpload = multer({
+  multerStorage: multerStorage,
+  dest: "./uploads"
+});
+router.use(multerUpload.single('file'));
 
 /* GET home page. */
 router.get("/",function(req,res){
@@ -33,6 +42,7 @@ function (error, result) {
   );
 });
 
+/* View an individual file from fileList or searchResults*/
 router.get("/viewFile",function(req,res){
 client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0';" +
   	"(doc('Colenso/"+req.query.file+"'))[1]",
@@ -49,6 +59,7 @@ function (error, result) {
 	});
 });
 
+/*View raw TEI of a file*/
 router.get("/viewRaw",function(req,res){
 client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0';" +
   	"(doc('Colenso/"+fileName+"'))[1]",
@@ -73,6 +84,7 @@ router.get("/searchByXQuery",function(req,res){
   res.render('searchByXQuery',{title: 'Colenso Project'});
 });
 
+/*Search database using strings, logical operators and wildcards*/
 router.get("/searchStringResult",function(req,res){
   var query = req.query.query;
   var isRaw = req.query.raw;
@@ -115,4 +127,32 @@ router.get("/searchXQueryResult", function(req,res){
     }
   });
 });
+
+router.get("/uploadFile",function(req,res){
+    res.render('uploadFile',{title: 'ColensoProject'});
+});
+
+router.post("/upload",function(req,res){
+  var upFile = req.file;
+  console.log(upFile);
+  if(upFile){
+    var path = upFile.originalname;
+    console.log("Path is: " + path);
+    var xml = upFile.buffer.toString();
+    client.execute('ADD to Colenso/uploads/'+path+' ""' + xml +'""',
+    function(error,result){
+      if(error){
+        console.error(error);
+      }
+      else{
+        console.log("Upload Successful");
+      }
+    });
+  }
+  else{
+    console.log("No file chosen");
+  }
+  res.redirect("/fileList");
+});
+
 module.exports = router;
