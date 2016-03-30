@@ -7,12 +7,12 @@ var url = require('url');
 var router = express.Router();
 var fileName = "";
 var multer = require('multer');
-var multerStorage = multer.memoryStorage();
-var multerUpload = multer({
-  multerStorage: multerStorage,
-  dest: "./uploads"
+var storage = multer.memoryStorage();
+var upload = multer({
+	storage: storage,
+	dest: './uploads'
 });
-router.use(multerUpload.single('file'));
+router.use(upload.single('file'));
 
 /* GET home page. */
 router.get("/",function(req,res){
@@ -54,7 +54,7 @@ function (error, result) {
     //console.log(result.result);
     //console.log(req.query.file);
     fileName = req.query.file;
-    res.render('viewFile', { title: 'Colenso Project', file: result.result });
+    res.render('viewFile', { title: 'Colenso Project', file: result.result, fileName: fileName });
 	 }
 	});
 });
@@ -75,11 +75,12 @@ function (error, result) {
 	});
 });
 
-
+/*Access the searchByString page*/
 router.get("/searchByString",function(req,res){
   res.render('searchByString',{title: 'Colenso Project'});
 });
 
+/*Access the searchByXQuery page*/
 router.get("/searchByXQuery",function(req,res){
   res.render('searchByXQuery',{title: 'Colenso Project'});
 });
@@ -110,6 +111,7 @@ router.get("/searchStringResult",function(req,res){
 	});
 });
 
+/*Search database using XQuery*/
 router.get("/searchXQueryResult", function(req,res){
   var query = req.query.query;
   var isRaw = req.query.raw;
@@ -128,31 +130,66 @@ router.get("/searchXQueryResult", function(req,res){
   });
 });
 
+/*Access file upload page*/
 router.get("/uploadFile",function(req,res){
     res.render('uploadFile',{title: 'ColensoProject'});
 });
 
+/*Performs the actual file upload*/
 router.post("/upload",function(req,res){
-  var upFile = req.file;
-  console.log(upFile);
-  if(upFile){
-    var path = upFile.originalname;
-    console.log("Path is: " + path);
-    var xml = upFile.buffer.toString();
-    client.execute('ADD to Colenso/uploads/'+path+' ""' + xml +'""',
-    function(error,result){
-      if(error){
-        console.error(error);
-      }
-      else{
-        console.log("Upload Successful");
-      }
-    });
-  }
-  else{
-    console.log("No file chosen");
-  }
-  res.redirect("/fileList");
+	var file = req.file;
+	if(file){
+		var ownFilePath = file.originalname;
+		var ownXmlFile = file.buffer.toString();
+		client.execute('ADD TO Colenso/uploads/'+ownFilePath+' "'+ownXmlFile+'"', function(error, result){
+			if(error){
+				console.error(error);
+			}
+			else{
+				console.log("File successfully uploaded");
+			}
+		});
+	}
+	else{
+		console.log("No file selected");
+	}
+	res.redirect("/fileList");
+});
+
+/*Performs the file download*/
+router.get("/downloadFile", function(req,res){
+  var filePath = req.query.file;
+  console.log("Path is: " + filePath);
+  client.execute("XQUERY doc ('Colenso/"+filePath+"')",function(error,result){
+    if(error){
+      console.error(error);
+    }
+    else{
+      var doc = result.result;
+      var fileName = "saveFile";
+      res.writeHead(200,{'Content-Disposition': 'attachment; filename=' + fileName});
+      res.write(doc);
+      res.end();
+    }
+  });
+});
+
+/*Saves changes when editing complete*/
+router.post("/editComplete",function(req,res){
+	var filePath = req.query.file;
+	var xmlFile = req.body.editedFile;
+
+	var cheerioXml = cheerio.load(xmlFile, {xmlMode: true});
+	var query = "REPLACE "+filePath+" "+xmlFile;
+
+	client.execute(query, function(error, result){
+		if(error){
+			console.error(error);
+		}
+		else{
+			res.redirect("view?file="+filePath);
+		}
+	});
 });
 
 module.exports = router;

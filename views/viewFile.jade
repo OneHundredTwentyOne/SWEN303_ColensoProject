@@ -11,6 +11,16 @@ block body
       +nav_item("/searchByXQuery") Search By XQuery
   .container
     <a href="/viewRaw" class="btn btn-info" role="button">View Raw TEI</a>
+    br
+    br
+    a(href="/downloadFile?file=" + fileName).btn-info.btn Download XML
+    br
   .container
     br
-    p| !{file}
+    +tab-list(["Read", "Edit"],0)
+      +tab("Read", "active")
+          p !{file}
+    +tab("Edit")
+      form(action = "/editComplete?file=" + path, method = "post")
+        button(type = "submit").btn.btn-default Save Changes
+        textarea.form-control(name = 'editedFile', rows = 50, cols = 100) #{file}
